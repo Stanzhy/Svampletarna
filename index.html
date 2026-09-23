@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="sv">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="style.css">
+        <script src="script.js" defer></script>
+        <title>Min Webbplats - Startsida</title>
+    </head>
+
+    <body id="index">
+        <header>
+            <img src="./images/svampletarna-logo.webp">
+            <nav>
+                <ul>
+                    <li><a href="index.html">Startsida</a></li>
+                    <li><a href="#">Artiklar</a></li>
+                    <li><a href="#">Om oss</a></li>
+                    <li>
+                        <span id="message"></span>
+                        <a href="#" id="logInBtn">Logga in</a>
+                    </li>
+                </ul>
+            </nav>
+        </header>
+        <div class="overlay hidden" id="overlay"></div>
+        <section class= "logInWindow hidden" id="logInWindow">
+            <span class="close-btn" id="closeBtn">&times;</span>
+            <h2>Välkommen</h2>
+            <form>
+                <label for="name">Namn</label>
+                <input type="text" id="name" name="name">
+                <label for="password">Lösenord</label>
+                <input type="password" id="password" name="password">
+                <button type="submit" id="btnSubmit">Logga in</button>
+            </form>
+        </section>
+        <main>
+            <section>
+                <img src="images/artikel.jpg" alt="Artikl bild">
+                <p>Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque
+                    sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna
+                    tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada
+                    lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora
+                    torquent per conubia nostra inceptos himenaeos.</p>
+            </section>
+        </main>
+        <footer>
+            <p>Skapad av Stanislav</p>
+        </footer>
+    </body>
+
+</html>
