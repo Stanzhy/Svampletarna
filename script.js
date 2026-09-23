@@ -1,3 +1,5 @@
+
+
 let logInWindow;
 let logInBtn;
 let overlay;
@@ -20,12 +22,13 @@ function showLogInWindows() {
 function hideLogInWindows() {
   overlay.classList.add("hidden");
   logInWindow.classList.add("hidden");
+  logInForm.reset();
 }
 
-function logUt() {
-  currentUser = undefined;
+function logOut() {
+  localStorage.removeItem("user")
   message.textContent = `Du har loggat ut.`;
-  logInBtn.textContent = "Logga In";
+  logInBtn.textContent = "Logga in";
 }
 
 function logIn() {
@@ -34,19 +37,24 @@ function logIn() {
   let formsMessage = logInForm.querySelector("span");
   users.forEach((element) => {
     if (element.name == name && element.password == password) {
-      currentUser = element;
+      localStorage.setItem("user", element.name)
     }
   });
-  if (!currentUser) {
+  if (!isLoggedIn()) {
     formsMessage.textContent = "Felaktiga inloggningsuppgifter";
     return;
   }
-  if (currentUser) {
-    hideLogInWindows();
-    message.textContent = `Välkommen ${currentUser.name}, du är nu inloggad.`;
-    logInBtn.textContent = "Logga Ut";
-    logInForm.reset();
+  hideLogInWindows();
+}
+
+function isLoggedIn(){
+   currentUser = localStorage.getItem("user" || null);
+   if (currentUser) {
+    message.textContent = `Välkommen ${currentUser}, du är nu inloggad.`;
+    logInBtn.textContent = "Logga ut";
+    return true
   }
+  return false
 }
 
 function init() {
@@ -57,9 +65,10 @@ function init() {
   logInForm = document.querySelector("form");
   message = document.getElementById("message");
 
-  
+  isLoggedIn()
+
   logInBtn.addEventListener("click", function () {
-    currentUser ? logUt() : showLogInWindows();
+     isLoggedIn() ? logOut() : showLogInWindows();
   });
   closeBtn.addEventListener("click", function () {
     hideLogInWindows();
