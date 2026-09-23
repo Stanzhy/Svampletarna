@@ -1,5 +1,5 @@
 * {
-  color: rgb(88, 88, 88);
+  color: #162B21;
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -11,9 +11,12 @@ body {
   font-family: Arial, Helvetica, sans-serif;
   padding: 10px;
   min-height: 100vh;
+  background-color: #F7F3EA;
 }
 header {
-  background-color: rgb(236, 236, 236);
+  background-color:  #E8EFE9;
+  border-bottom: 3px solid #B45C2A; 
+  border-radius: 12px;
 }
 
 header > img {
@@ -46,6 +49,10 @@ a {
   text-decoration: none;
 }
 
+a:hover { 
+  color: #B45C2A; 
+}
+
 main {
   padding-top: 20px;
   height: fit-content;
@@ -56,13 +63,16 @@ main {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: #ffffff;
   padding: 30px;
   border-radius: 8px;
   z-index: 100;
   width: 90%;
   max-width: 400px;
   margin-top: 0;
+  background-color: #FFFDF8;
+  border: 2px solid #B45C2A; 
+  border-radius: 12px; 
+  box-shadow: 0 8px 30px rgba(22,43,33,.18);
 }
 
 .close-btn {
@@ -71,7 +81,7 @@ main {
   right: 15px;
   font-size: 24px;
   cursor: pointer;
-  color: #333;
+  color:#162B21;
 }
 
 .logInWindow form {
@@ -84,19 +94,25 @@ main {
 .logInWindow input {
   padding: 8px;
   font-size: 1rem;
+  background-color: #F7F3EA; 
   border: 1px solid #ccc;
   border-radius: 4px;
+  border-color: #AFC2B4;
 }
 
 .logInWindow button {
   padding: 10px;
-  background-color: rgb(158, 158, 158);
-  color: white;
+  background-color: #162B21;
+  color: #FFFDF8;
   border: none;
   border-radius: 4px;
   font-size: 1rem;
   cursor: pointer;
   margin-top: 10px;
+}
+
+.logInWindow button:hover { 
+  background-color: #B45C2A; 
 }
 
 .overlay {
@@ -105,7 +121,7 @@ main {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color:rgba(22, 43, 33, 0.45);
   z-index: 99;
 }
 
@@ -117,6 +133,10 @@ main {
 section {
   margin-top: 20px;
   padding: 20px;
+  background-color: #FFFDF8; 
+  border: 1px solid #D8E2DA; 
+  border-left: 5px solid #B45C2A; 
+  border-radius: 12px;
 }
 
 img {
@@ -127,6 +147,7 @@ img {
 
 p {
   line-height: 1.5;
+  color: #30483B;
 }
 
 @media (min-width: 768px) {
@@ -190,7 +211,7 @@ footer {
   margin-top: 10px;
   padding: 5px;
   text-align: center;
-  background-color: rgb(236, 236, 236);
+  background-color: #E8EFE9;
+  border-top: 2px solid #B45C2A; 
+  border-radius: 10px;
 }
-
-
