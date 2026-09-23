@@ -1,17 +1,24 @@
-
-
 let logInWindow;
 let logInBtn;
 let overlay;
 let closeBtn;
 let logInForm;
 let message;
+const users = [];
 let currentUser;
-const userKalle = {
-  name: "Kalle",
-  password: "qwe123",
-};
-let users = [userKalle];
+
+function User(newName, newPassword) {
+  this.name = newName;
+  this.password = newPassword;
+  Object.freeze(this);
+}
+
+function newUser(currentName, currentPass) {
+  const user = new User(currentName, currentPass);
+  users.push(user);
+}
+
+
 
 function showLogInWindows() {
   overlay.classList.remove("hidden");
@@ -26,7 +33,7 @@ function hideLogInWindows() {
 }
 
 function logOut() {
-  localStorage.removeItem("user")
+  localStorage.removeItem("user");
   message.textContent = `Du har loggat ut.`;
   logInBtn.textContent = "Logga in";
 }
@@ -37,7 +44,7 @@ function logIn() {
   let formsMessage = logInForm.querySelector("span");
   users.forEach((element) => {
     if (element.name == name && element.password == password) {
-      localStorage.setItem("user", element.name)
+      localStorage.setItem("user", element.name);
     }
   });
   if (!isLoggedIn()) {
@@ -47,14 +54,14 @@ function logIn() {
   hideLogInWindows();
 }
 
-function isLoggedIn(){
-   currentUser = localStorage.getItem("user" || null);
-   if (currentUser) {
+function isLoggedIn() {
+  currentUser = localStorage.getItem("user" || null);
+  if (currentUser) {
     message.textContent = `Välkommen ${currentUser}, du är nu inloggad.`;
     logInBtn.textContent = "Logga ut";
-    return true
+    return true;
   }
-  return false
+  return false;
 }
 
 function init() {
@@ -64,11 +71,13 @@ function init() {
   closeBtn = document.getElementById("closeBtn");
   logInForm = document.querySelector("form");
   message = document.getElementById("message");
+  newUser("Kalle", "qwe123");
+  newUser("Kal", "123");
 
-  isLoggedIn()
+  isLoggedIn();
 
   logInBtn.addEventListener("click", function () {
-     isLoggedIn() ? logOut() : showLogInWindows();
+    isLoggedIn() ? logOut() : showLogInWindows();
   });
   closeBtn.addEventListener("click", function () {
     hideLogInWindows();
