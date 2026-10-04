@@ -129,12 +129,6 @@ main {
   z-index: 99;
 }
 
-/* gömmer containern logga in */
-.hidden {
-  visibility: hidden;
-  display: none;
-}
-
 section {
   margin-top: 20px;
   padding: 20px;
