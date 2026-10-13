@@ -22,14 +22,14 @@ function newUser(currentName, currentPass) {
 }
 
 function showLogInWindows() {
-  overlay.classList.remove("hidden");
-  logInWindow.classList.remove("hidden");
+  overlay.hidden = false;
+  logInWindow.hidden = false;
   message.textContent = "";
 }
 
 function hideLogInWindows() {
-  overlay.classList.add("hidden");
-  logInWindow.classList.add("hidden");
+  overlay.hidden = true;
+  logInWindow.hidden = true;
   logInForm.reset();
   formsMessage.textContent = "";
 }
@@ -47,7 +47,7 @@ function logIn() {
 
   // Söker användaren i listan och sparar namnet efter matchning
   users.forEach((element) => {
-    if (element.name == name && element.password == password) {
+    if (element.name === name && element.password === password) {
       localStorage.setItem("user", element.name);
     }
   });
