@@ -1,4 +1,7 @@
-const logInWindow = document.getElementById("logInWindow");;
+const startsida = document.getElementById("startsida");
+const hittadeSvampar = document.getElementById("hittadeSvampar");
+const riskerOchEgenskaper = document.getElementById("riskerOchEgenskaper");
+const logInWindow = document.getElementById("logInWindow");
 const logInBtn = document.getElementById("logInBtn");
 const overlay = document.getElementById("overlay");
 const closeBtn = document.getElementById("closeBtn");
@@ -7,6 +10,7 @@ const message = document.getElementById("message");
 const formsMessage = logInForm.querySelector("span");
 const main = document.querySelector("main");
 const users = [];
+let currentPage = "startsida";
 let currentUser;
 
 // Konstruktor för användare med skydd mot ändringar (fryser objektet)
@@ -79,7 +83,6 @@ function createElement(tag, textContent) {
   return element;
 }
 
-
 // Skapar ett img element med src och alt attribut.
 function createImageElement(src, alt) {
   const img = document.createElement("img");
@@ -102,7 +105,10 @@ function createSvampKort(svamp, container) {
   const namn = createElement("h3", svamp.svenskt_namn);
   div.appendChild(namn);
 
-  const latinsktNamn = createElement("p", `Latinskt namn: ${svamp.latinskt_namn}`);
+  const latinsktNamn = createElement(
+    "p",
+    `Latinskt namn: ${svamp.latinskt_namn}`,
+  );
   div.appendChild(latinsktNamn);
 
   const ätlig = createElement("p", `Ätlighet: ${svamp.ätlig}`);
@@ -129,21 +135,24 @@ function createSvampKort(svamp, container) {
 function createEgenskaper(egenskap, container) {
   const section = document.createElement("section");
 
+const div = createElement("div");
+  section.appendChild(div);
+
   const par = createElement("h3", egenskap.par);
-  section.appendChild(par);
+  div.appendChild(par);
 
   const risk = createElement("p", `Risk: ${egenskap.risk}`);
-  section.appendChild(risk);
+  div.appendChild(risk);
 
   const särskiljande = createElement("h4", `Särskiljande:`);
-  section.appendChild(särskiljande);
+  div.appendChild(särskiljande);
 
   const särskiljandeList = document.createElement("ul");
   egenskap.särskiljande.forEach((skillnad) => {
     const li = createElement("li", skillnad);
     särskiljandeList.appendChild(li);
   });
-  section.appendChild(särskiljandeList);
+  div.appendChild(särskiljandeList);
 
   container.appendChild(section);
 }
@@ -164,19 +173,23 @@ async function fetchData() {
     const dataSvampar = await responceSvampar.json();
     const dataEgenskaper = await responceEgenskaper.json();
 
-    if (null) {
+    switch (currentPage) {
+      case "startsida":
+        dataSvampar.svampar.forEach((svamp) => {
+          createSvampKort(svamp, main);
+        });
+        break;
       //skapar artilel för varje särskiljande egenskap i speciellaegenskaper.json
-      dataEgenskaper.särskiljande_egenskaper.forEach((egenskap) => {
-        createEgenskaper(egenskap, egenskaperContainer);
-      });
+      case "riskerOchEgenskaper":
+        dataEgenskaper.särskiljande_egenskaper.forEach((egenskap) => {
+          createEgenskaper(egenskap, main);
+        });
+        break;
+      case "hittadeSvampar":
+
+      break;
     }
 
-    if (main) {
-      //skapar svampKort för alla svampar i svampar.json
-      dataSvampar.svampar.forEach((svamp) => {
-        createSvampKort(svamp, main);
-      });
-    }
     
   } catch (error) {
     console.error(error);
@@ -191,6 +204,24 @@ function init() {
   // När sidan laddas kollar om det är redan inloggat
   isLoggedIn();
   fetchData();
+
+  startsida.addEventListener("click", function () {
+    currentPage = "startsida";
+    main.innerHTML = "";
+    fetchData();
+  });
+
+  hittadeSvampar.addEventListener("click", function () {
+    currentPage = "hittadeSvampar";
+    main.innerHTML = "";
+    fetchData();
+  });
+
+  riskerOchEgenskaper.addEventListener("click", function () {
+    currentPage = "riskerOchEgenskaper";
+    main.innerHTML = "";
+    fetchData();
+  });
 
   logInBtn.addEventListener("click", function (event) {
     event.preventDefault();
