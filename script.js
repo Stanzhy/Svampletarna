@@ -14,10 +14,21 @@ let currentPage = "startsida";
 let currentUser;
 
 // Konstruktor för användare med skydd mot ändringar (fryser objektet)
-function User(newName, newPassword) {
+class User{
+  #password="";
+  constructor(newName, newPassword) {
   this.name = newName;
-  this.password = newPassword;
-  Object.freeze(this);
+  this.#password = newPassword;
+  this.foundMushrooms = [];
+  }
+
+  checkPassword(currentPassword) {
+    return this.#password === currentPassword;
+  }
+
+  addFoundMushroom(mushroom) {
+    this.foundMushrooms.push(mushroom);
+  }
 }
 
 // Skapar nya användare och plasera i användarlistan
@@ -47,15 +58,17 @@ function logOut() {
 }
 
 function logIn() {
-  let name = logInForm.elements.name.value;
-  let password = logInForm.elements.password.value;
+  const name = logInForm.elements.name.value;
+  const password = logInForm.elements.password.value;
 
+  const user = users.find((u) => u.name === name);
   // Söker användaren i listan och sparar namnet efter matchning
-  users.forEach((element) => {
-    if (element.name === name && element.password === password) {
-      localStorage.setItem("user", element.name);
+ 
+    if (user && user.checkPassword(password)) {
+      localStorage.setItem("user", JSON.stringify({ name: user.name, foundMushrooms: user.foundMushrooms }));
+      hideLogInWindows();
     }
-  });
+  
 
   // Kontrollerar om inloggningen lyckades
   if (!isLoggedIn()) {
@@ -63,14 +76,15 @@ function logIn() {
     return;
   }
 
-  hideLogInWindows();
+  
 }
 
 // Kontrollerar om det är redan inloggat
 function isLoggedIn() {
   currentUser = localStorage.getItem("user");
   if (currentUser) {
-    message.textContent = `Välkommen ${currentUser}, du är nu inloggad.`;
+    currentUser = JSON.parse(currentUser);
+    message.textContent = `Välkommen ${currentUser.name}, du är nu inloggad.`;
     logInBtn.textContent = "Logga ut";
     return true;
   }
