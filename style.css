@@ -62,9 +62,13 @@ a:hover {
   color: #b45c2a;
 }
 
+.selectedPage {
+  color: #b45c2a;
+}
+
 main {
   padding-top: 20px;
-  height: fit-content;
+  /* height:fit-content; */
 }
 
 .logInWindow {
@@ -137,6 +141,7 @@ main {
 section {
   margin-top: 20px;
   padding: 20px;
+  height: fit-content;
   background-color: #fffdf8;
   border: 1px solid #d8e2da;
   border-left: 5px solid #b45c2a;
@@ -154,7 +159,7 @@ section > div {
   display: flex;
   flex-direction: column;
   padding: 10px;
- row-gap: 10px;
+  row-gap: 10px;
 }
 
 h3 {
@@ -178,6 +183,26 @@ div > button {
   font-size: 1.2rem;
   cursor: pointer;
   margin-top: auto;
+}
+
+.clear-btn-cont {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  width: 100%;
+}
+
+.clear-btn-cont button {
+  padding: 10px;
+  background-color: #162b21;
+  color: #fffdf8;
+  border: none;
+  border-radius: 4px;
+  align-self: center;
+  width: 20%;
+  font-size: 1rem;
+  cursor: pointer;
 }
 
 @media (min-width: 768px) {
