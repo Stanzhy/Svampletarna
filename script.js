@@ -30,7 +30,9 @@ class User {
   }
 
   addFoundMushroom(mushroom) {
-    if (!this.foundMushrooms.includes(mushroom)) {
+    if (
+      !this.foundMushrooms.some((m) => m.svenskt_namn === mushroom.svenskt_namn)
+    ) {
       this.foundMushrooms.push(mushroom);
     }
   }
@@ -68,7 +70,7 @@ function logOut() {
   if (currentUser) {
     currentUser.isLoggedIn = false;
     currentUser = null;
-    saveCurrentUsersData();
+    StorageService.saveUsers(users);
     updateUI();
   }
   message.textContent = `Du har loggat ut.`;
@@ -84,7 +86,7 @@ function logIn() {
 
   if (user && user.checkPassword(password)) {
     user.isLoggedIn = true;
-    saveCurrentUsersData(user);
+    StorageService.saveUsers(users);
     hideLogInWindows();
     updateUI();
   }
@@ -96,35 +98,39 @@ function logIn() {
   }
 }
 
-function saveCurrentUsersData() {
-  const usersDataToSave = [];
-  users.forEach((user) => {
-    usersDataToSave.push({
-      name: user.name,
-      foundMushrooms: user.foundMushrooms,
-      isLoggedIn: user.isLoggedIn,
-    });
-  });
-  localStorage.setItem("users", JSON.stringify(usersDataToSave));
-}
+const StorageService = {
+  saveUsers(users) {
+    const dataToSave = users.map((u) => ({
+      name: u.name,
+      foundMushrooms: u.foundMushrooms,
+      isLoggedIn: u.isLoggedIn,
+    }));
+    localStorage.setItem("users", JSON.stringify(dataToSave));
+  },
 
-function getDataFromLocalStorage() {
-  const storedUsers = localStorage.getItem("users");
-  if (storedUsers) {
-    try {
-      const parsedUsers = JSON.parse(storedUsers);
-      parsedUsers.forEach((userData) => {
-        const updatedUser = users.find((u) => u.name === userData.name);
-        if (updatedUser) {
-          updatedUser.foundMushrooms = userData.foundMushrooms || [];
-          updatedUser.isLoggedIn = userData.isLoggedIn || false;
-        }
-      });
-    } catch (error) {
-      console.error("Fel vid läsning från localStorage:", error);
+  loadUsersData(users) {
+    const data = localStorage.getItem("users");
+    const parsedUsers = data ? JSON.parse(data) : [];
+
+    if (parsedUsers.length > 0) {
+      try {
+        parsedUsers.forEach((userData) => {
+          const updatedUser = users.find((u) => u.name === userData.name);
+          if (updatedUser) {
+            updatedUser.foundMushrooms = userData.foundMushrooms || [];
+            updatedUser.isLoggedIn = userData.isLoggedIn || false;
+          }
+        });
+      } catch (error) {
+        console.error("Fel vid bearbetning av sparade användare:", error);
+      }
     }
-  }
-}
+  },
+
+  clearUsersStorage() {
+    localStorage.clear();
+  },
+};
 
 // Kontrollerar om det är redan inloggat
 function isLoggedIn() {
@@ -188,7 +194,7 @@ function createSvampKort(svamp) {
     btn.addEventListener("click", () => {
       if (currentUser) {
         currentUser.addFoundMushroom(svamp);
-        saveCurrentUsersData(currentUser);
+        StorageService.saveUsers(users);
         btn.textContent = "Svapm är hittad";
       } else {
         message.textContent = "Du måste logga in för att lägga till svampar.";
@@ -202,7 +208,7 @@ function createSvampKort(svamp) {
     btn.addEventListener("click", () => {
       if (currentUser) {
         currentUser.deleteMushroom(svamp);
-        saveCurrentUsersData(currentUser);
+        StorageService.saveUsers(users);
         updateUI();
       }
     });
@@ -212,26 +218,34 @@ function createSvampKort(svamp) {
   main.appendChild(section);
 }
 
-function checkImg(mushroomName) {
-  let mushroomImg;
+function findMushroomWithImg(mushroomName) {
+  let mushroom;
   allMushrooms.forEach((svamp) => {
     if (svamp.svenskt_namn.includes(mushroomName)) {
-      mushroomImg = svamp.bild;
+      mushroom = svamp;
     }
   });
-  return mushroomImg;
+  return mushroom;
 }
 // Skapar en element för varje särskiljande egenskap och lägger till den i rätt container. Tar emot egenskap objektet och container elementet som argument.
-function createEgenskaper(egenskap, image) {
+function createEgenskaper(egenskap) {
   const section = document.createElement("section");
 
-  const imgPath1 = checkImg(egenskap.par.slice(0, 6));
-  const img1 = createImageElement(`./img/${imgPath1}`, "");
+  const mushroomWithImg1 = findMushroomWithImg(egenskap.par.slice(0, 6));
+  const img1 = createImageElement(
+    `./img/${mushroomWithImg1.bild}`,
+    `${mushroomWithImg1.svenskt_namn}`,
+  );
   section.appendChild(img1);
 
-  const imgPath2 = checkImg(egenskap.par.split("vs. ")[1].slice(0, 6));
-  if (imgPath2) {
-    const img2 = createImageElement(`./img/${imgPath2}`, "");
+  const mushroomWithImg2 = findMushroomWithImg(
+    egenskap.par.split("vs. ")[1].slice(0, 6),
+  );
+  if (mushroomWithImg2) {
+    const img2 = createImageElement(
+      `./img/${mushroomWithImg2.bild}`,
+      `${mushroomWithImg2.svenskt_namn}`,
+    );
     section.appendChild(img2);
   }
 
@@ -280,7 +294,7 @@ function updateUI() {
         const clearBtn = createElement("button", `Rensa listan`);
         clearBtn.addEventListener("click", () => {
           currentUser.foundMushrooms = [];
-          saveCurrentUsersData(currentUser);
+          StorageService.saveUsers(users);
           updateUI();
         });
         clearBtnCont.appendChild(clearBtn);
@@ -290,7 +304,7 @@ function updateUI() {
     case "risksProperties":
       main.innerHTML = "";
       allProperties.forEach((egenskap) => {
-        createEgenskaper(egenskap, checkImg(egenskap));
+        createEgenskaper(egenskap);
       });
       break;
   }
@@ -323,7 +337,7 @@ function init() {
   newUser("Anna", "asd123");
 
   // När sidan laddas kollar om det är redan inloggat
-  getDataFromLocalStorage();
+  StorageService.loadUsersData(users);
   isLoggedIn();
   fetchData();
 
