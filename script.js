@@ -143,12 +143,7 @@ const StorageService = {
     }
   },
 
-  clearUsersStorage() {
-    localStorage.clear();
-  },
 };
-
-// visaFoundMushrooms() {}
 
 function createElement(tag, textContent) {
   const element = document.createElement(tag);
@@ -164,8 +159,12 @@ function createImageElement(src, alt) {
   return img;
 }
 
+function findMushroomByName(partialName) {
+  return state.mushrooms.find((s) => s.svenskt_namn.includes(partialName));
+}
+
 // Skapar ett svampkort med information om svampen och lägger till den i rätt container. Tar emot svamp objektet och container elementet som argument.
-function createSvampKort(svamp) {
+function createSvampKort(svamp, btnText, btnAction) {
   const section = document.createElement("section");
   section.classList.add("svamp-card");
 
@@ -181,123 +180,119 @@ function createSvampKort(svamp) {
   div.appendChild(createElement("p", `Beskrivning: ${svamp.beskrivning}`));
   div.appendChild(createElement("p", `Fyndplats: ${svamp.fyndplats}`));
 
-  if (state.currentPage === "mushroomsPage") {
-    const btn = createElement("button", "Jag har hittat denna svamp!");
-    btn.addEventListener("click", () => {
-      if (state.currentUser) {
-        state.currentUser.addFoundMushroom(svamp);
-        StorageService.saveUsers();
-        btn.textContent = "Svapm är hittad";
-      } else {
-        message.textContent = "Du måste logga in för att lägga till svampar.";
-      }
-    });
+   if (btnText && btnAction) {
+    const btn = createElement("button", btnText);
+    btn.addEventListener("click", () => btnAction(btn));
     div.appendChild(btn);
   }
 
-  if (state.currentPage === "foundPage") {
-    const btn = createElement("button", "Tabort svampen");
-    btn.addEventListener("click", () => {
-      if (state.currentUser) {
+  return section;
+}
+
+function renderRisksPage() {
+  DOM.main.innerHTML = "";
+
+  state.properties.forEach((egenskap) => {
+    const section = createElement("section");
+
+    const name1 = egenskap.par.slice(0, 6);
+    const mushroom1 = findMushroomByName(name1);
+    if (mushroom1) {
+      section.appendChild(
+        createImageElement(`./img/${mushroom1.bild}`, mushroom1.svenskt_namn),
+      );
+    }
+
+    const name2 = egenskap.par.split("vs. ")[1].slice(0, 6);
+    const mushroom2 = name2 ? findMushroomByName(name2) : null;
+    if (mushroom2) {
+      section.appendChild(
+        createImageElement(`./img/${mushroom2.bild}`, mushroom2.svenskt_namn),
+      );
+    }
+
+    const div = createElement("div");
+    section.appendChild(div);
+
+    div.appendChild(createElement("h3", egenskap.par));
+    div.appendChild(createElement("p", `Risk: ${egenskap.risk}`));
+    div.appendChild(createElement("h4", "Särskiljande:"));
+
+    const ul = createElement("ul");
+    egenskap.särskiljande.forEach((item) => {
+      ul.appendChild(createElement("li", item));
+    });
+    div.appendChild(ul);
+
+    DOM.main.appendChild(section);
+  });
+}
+
+function renderMushroomsPage() {
+  DOM.main.innerHTML = "";
+
+  state.mushrooms.forEach((svamp) => {
+    const card = createSvampKort(
+      svamp,
+      "Jag har hittat denna svamp!",
+      (btn) => {
+        if (isLoggedIn()) {
+          state.currentUser.addFoundMushroom(svamp);
+          StorageService.saveUsers();
+          btn.textContent = "Svamp är hittad ✓";
+        } else {
+          DOM.message.textContent =
+            "Du måste logga in för att lägga till svampar.";
+        }
+      },
+    );
+    DOM.main.appendChild(card);
+  });
+}
+
+function renderFoundPage() {
+  DOM.main.innerHTML = "";
+
+  if (!isLoggedIn()) return;
+
+  state.currentUser.foundMushrooms.forEach((svamp) => {
+    const card = createSvampKort(
+      svamp,
+      "Ta bort svampen",
+      () => {
         state.currentUser.deleteMushroom(svamp);
         StorageService.saveUsers();
         updateUI();
-      }
-    });
-    div.appendChild(btn);
-  }
-
-  DOM.main.appendChild(section);
-}
-
-function findMushroomWithImg(mushroomName) {
-  let mushroom;
-  state.mushrooms.forEach((svamp) => {
-    if (svamp.svenskt_namn.includes(mushroomName)) {
-      mushroom = svamp;
-    }
-  });
-  return mushroom;
-}
-// Skapar en element för varje särskiljande egenskap och lägger till den i rätt container. Tar emot egenskap objektet och container elementet som argument.
-function createEgenskaper(egenskap) {
-  const section = document.createElement("section");
-
-  const mushroomWithImg1 = findMushroomWithImg(egenskap.par.slice(0, 6));
-  const img1 = createImageElement(
-    `./img/${mushroomWithImg1.bild}`,
-    `${mushroomWithImg1.svenskt_namn}`,
-  );
-  section.appendChild(img1);
-
-  const mushroomWithImg2 = findMushroomWithImg(
-    egenskap.par.split("vs. ")[1].slice(0, 6),
-  );
-  if (mushroomWithImg2) {
-    const img2 = createImageElement(
-      `./img/${mushroomWithImg2.bild}`,
-      `${mushroomWithImg2.svenskt_namn}`,
+      },
     );
-    section.appendChild(img2);
-  }
-
-  const div = createElement("div");
-  section.appendChild(div);
-
-  const par = createElement("h3", egenskap.par);
-  div.appendChild(par);
-
-  const risk = createElement("p", `Risk: ${egenskap.risk}`);
-  div.appendChild(risk);
-
-  const särskiljande = createElement("h4", `Särskiljande:`);
-  div.appendChild(särskiljande);
-
-  const särskiljandeList = document.createElement("ul");
-  egenskap.särskiljande.forEach((skillnad) => {
-    const li = createElement("li", skillnad);
-    särskiljandeList.appendChild(li);
+    DOM.main.appendChild(card);
   });
-  div.appendChild(särskiljandeList);
 
-  DOM.main.appendChild(section);
+  const clearContainer = createElement("div");
+  clearContainer.classList.add("clear-btn-cont");
+
+  const clearBtn = createElement("button", "Rensa listan");
+  clearBtn.addEventListener("click", () => {
+    state.currentUser.foundMushrooms = [];
+    StorageService.saveUsers();
+    updateUI();
+  });
+  clearContainer.appendChild(clearBtn);
+  DOM.main.appendChild(clearContainer);
 }
 
 function updateUI() {
   switch (state.currentPage) {
     case "mushroomsPage":
-      //DOM.mushroomsPage.classList.add("selectedPage");
-      DOM.main.innerHTML = "";
-      state.mushrooms.forEach((svamp) => {
-        createSvampKort(svamp);
-      });
+      renderMushroomsPage();
       break;
 
     case "foundPage":
-      DOM.main.innerHTML = "";
-      if (state.currentUser) {
-        state.currentUser.foundMushrooms.forEach((svamp) => {
-          createSvampKort(svamp);
-        });
-        const clearBtnCont = createElement("div", "");
-        clearBtnCont.classList.add("clear-btn-cont");
-        DOM.main.appendChild(clearBtnCont);
-
-        const clearBtn = createElement("button", `Rensa listan`);
-        clearBtn.addEventListener("click", () => {
-          state.currentUser.foundMushrooms = [];
-          StorageService.saveUsers();
-          updateUI();
-        });
-        clearBtnCont.appendChild(clearBtn);
-      }
+      renderFoundPage();
       break;
-    //skapar artilel för varje särskiljande egenskap i speciellaegenskaper.json
+
     case "risksPage":
-      DOM.main.innerHTML = "";
-      state.properties.forEach((egenskap) => {
-        createEgenskaper(egenskap);
-      });
+      renderRisksPage();
       break;
   }
 }
@@ -350,7 +345,7 @@ function init() {
 
   DOM.logInBtn.addEventListener("click", function (event) {
     event.preventDefault();
-    isLoggedIn() ? logOut() : showLogInWindows();
+    if(isLoggedIn()) {logOut()} else showLogInWindows();
   });
 
   DOM.closeBtn.addEventListener("click", function () {
