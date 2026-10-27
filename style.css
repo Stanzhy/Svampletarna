@@ -66,9 +66,8 @@ a:hover {
   color: #b45c2a;
 }
 
-main {
+#mainContainer {
   padding-top: 20px;
-  /* height:fit-content; */
 }
 
 .logInWindow {
@@ -148,7 +147,7 @@ section {
   border-radius: 12px;
 }
 
-main > section > img {
+#mainContainer > section > img {
   width: 100%;
   min-width: 300px;
   height: fit-content;
@@ -252,18 +251,18 @@ div > button {
     padding: 0;
   }
 
-  main {
+  #mainContainer {
     display: grid;
     gap: 20px;
   }
 
-  main > section {
+  #mainContainer > section {
     display: flex;
     flex-direction: row;
     gap: 20px;
     margin-top: 0;
   }
-  main > section > img {
+  #mainContainer > section > img {
     width: 300px;
     padding: 0;
   }

@@ -1,5 +1,5 @@
 const DOM = {
-  main: document.querySelector("main"),
+  mainContainer: document.getElementById("mainContainer"),
   message: document.getElementById("message"),
   logInBtn: document.getElementById("logInBtn"),
   logInWindow: document.getElementById("logInWindow"),
@@ -7,10 +7,10 @@ const DOM = {
   closeBtn: document.getElementById("closeBtn"),
   logInForm: document.getElementById("logInForm"),
   formsMessage: document.querySelector("#logInForm span"),
-  mainPage: document.getElementById("mainPage"), 
+  mainPage: document.getElementById("mainPage"),
   mushroomsPage: document.getElementById("mushroomsPage"),
   foundPage: document.getElementById("foundPage"),
-  risksPage: document.getElementById("risksPage")
+  risksPage: document.getElementById("risksPage"),
 };
 
 const state = {
@@ -19,15 +19,17 @@ const state = {
   users: [],
   mushrooms: [],
   properties: [],
-}
+  posts: [],
+};
 // Konstruktor för användare med skydd mot ändringar (fryser objektet)
 class User {
   #password;
-  constructor(newName, newPassword) {
+  constructor(newName, newPassword, isRedaktor = false) {
     this.name = newName;
     this.#password = newPassword;
     this.foundMushrooms = [];
     this.isLoggedIn = false;
+    this.isRedaktor = isRedaktor;
   }
 
   checkPassword(currentPassword) {
@@ -49,12 +51,12 @@ class User {
 }
 
 // Skapar nya användare och plasera i användarlistan
-function createUser(currentName, currentPass) {
+function createUser(currentName, currentPass, isRedaktor = false) {
   if (state.users.some((user) => user.name === currentName)) {
     console.log(`Användaren ${currentName} finns redan.`);
     return;
   }
-  state.users.push(new User(currentName, currentPass));
+  state.users.push(new User(currentName, currentPass, isRedaktor));
 }
 
 function showLogInWindows() {
@@ -120,6 +122,7 @@ const StorageService = {
       name: u.name,
       foundMushrooms: u.foundMushrooms,
       isLoggedIn: u.isLoggedIn,
+      isRedaktor: u.isRedaktor,
     }));
     localStorage.setItem("users", JSON.stringify(dataToSave));
   },
@@ -135,6 +138,7 @@ const StorageService = {
           if (updatedUser) {
             updatedUser.foundMushrooms = userData.foundMushrooms || [];
             updatedUser.isLoggedIn = userData.isLoggedIn || false;
+            updatedUser.isRedaktor = userData.isRedaktor || false;
           }
         });
       } catch (error) {
@@ -142,10 +146,9 @@ const StorageService = {
       }
     }
   },
-
 };
 
-function createElement(tag, textContent) {
+function createElement(tag, textContent = "") {
   const element = document.createElement(tag);
   element.textContent = textContent;
   return element;
@@ -180,7 +183,7 @@ function createSvampKort(svamp, btnText, btnAction) {
   div.appendChild(createElement("p", `Beskrivning: ${svamp.beskrivning}`));
   div.appendChild(createElement("p", `Fyndplats: ${svamp.fyndplats}`));
 
-   if (btnText && btnAction) {
+  if (btnText && btnAction) {
     const btn = createElement("button", btnText);
     btn.addEventListener("click", () => btnAction(btn));
     div.appendChild(btn);
@@ -190,7 +193,7 @@ function createSvampKort(svamp, btnText, btnAction) {
 }
 
 function renderRisksPage() {
-  DOM.main.innerHTML = "";
+  DOM.mainContainer.innerHTML = "";
 
   state.properties.forEach((egenskap) => {
     const section = createElement("section");
@@ -224,12 +227,12 @@ function renderRisksPage() {
     });
     div.appendChild(ul);
 
-    DOM.main.appendChild(section);
+    DOM.mainContainer.appendChild(section);
   });
 }
 
 function renderMushroomsPage() {
-  DOM.main.innerHTML = "";
+  DOM.mainContainer.innerHTML = "";
 
   state.mushrooms.forEach((svamp) => {
     const card = createSvampKort(
@@ -246,26 +249,22 @@ function renderMushroomsPage() {
         }
       },
     );
-    DOM.main.appendChild(card);
+    DOM.mainContainer.appendChild(card);
   });
 }
 
 function renderFoundPage() {
-  DOM.main.innerHTML = "";
+  DOM.mainContainer.innerHTML = "";
 
   if (!isLoggedIn()) return;
 
   state.currentUser.foundMushrooms.forEach((svamp) => {
-    const card = createSvampKort(
-      svamp,
-      "Ta bort svampen",
-      () => {
-        state.currentUser.deleteMushroom(svamp);
-        StorageService.saveUsers();
-        updateUI();
-      },
-    );
-    DOM.main.appendChild(card);
+    const card = createSvampKort(svamp, "Ta bort svampen", () => {
+      state.currentUser.deleteMushroom(svamp);
+      StorageService.saveUsers();
+      updateUI();
+    });
+    DOM.mainContainer.appendChild(card);
   });
 
   const clearContainer = createElement("div");
@@ -278,11 +277,15 @@ function renderFoundPage() {
     updateUI();
   });
   clearContainer.appendChild(clearBtn);
-  DOM.main.appendChild(clearContainer);
+  DOM.mainContainer.appendChild(clearContainer);
 }
 
 function updateUI() {
   switch (state.currentPage) {
+    case "mainPage":
+      renderMainPage();
+      break;
+
     case "mushroomsPage":
       renderMushroomsPage();
       break;
@@ -320,13 +323,18 @@ async function fetchData() {
 
 function init() {
   // Skapar nya användare
-  createUser("Kalle", "qwe123");
+  createUser("Kalle", "qwe123", (isRedaktor = true));
   createUser("Anna", "asd123");
 
   // När sidan laddas kollar om det är redan inloggat
   StorageService.loadUsersData(state.users);
   isLoggedIn();
   fetchData();
+
+  DOM.mainPage.addEventListener("click", function () {
+    state.currentPage = "mainPage";
+    updateUI();
+  });
 
   DOM.mushroomsPage.addEventListener("click", function () {
     state.currentPage = "mushroomsPage";
@@ -345,7 +353,9 @@ function init() {
 
   DOM.logInBtn.addEventListener("click", function (event) {
     event.preventDefault();
-    if(isLoggedIn()) {logOut()} else showLogInWindows();
+    if (isLoggedIn()) {
+      logOut();
+    } else showLogInWindows();
   });
 
   DOM.closeBtn.addEventListener("click", function () {

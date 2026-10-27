@@ -6,6 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="style.css">
         <script src="script.js" defer></script>
+        <script src="blog.js" defer></script>
         <title>Svampletarna</title>
     </head>
 
@@ -18,7 +19,7 @@
             </h1>
             <nav>
                 <ul>
-                    <li><a href="/" id="mainPage">Blogg</a></li>
+                    <li><a href="#" id="mainPage">Blogg</a></li>
                     <li><a href="#" id="mushroomsPage">Svampar</a></li>
                     <li><a href="#" id="foundPage">Hittade svampar</a></li>
                     <li><a href="#" id="risksPage">Risker och egenskaper</a></li>
@@ -43,23 +44,32 @@
             </form>
         </section>
         <main>
-            <section>
-                <img src="img/artikel.png" alt="Artikl bild">
-                <div>
-                    <h3>Artikel</h3>
-                    <p>Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae
-                        pellentesque
-                        sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna
-                        tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl
-                        malesuada
-                        lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora
-                        torquent per conubia nostra inceptos himenaeos.</p>
+            <div id="mainContainer">
+                <section>
+                    <img src="img/artikel.png" alt="Artikl bild">
                     <div>
-                        <p id="data">26 oktober 2026</p>
-                        <p id="author">Kalle</p>
+                        <h3>Artikel</h3>
+                        <p>Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae
+                            pellentesque
+                            sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam
+                            urna
+                            tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl
+                            malesuada
+                            lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad
+                            litora
+                            torquent per conubia nostra inceptos himenaeos.</p>
+                        <p id="author">Kalle - 26 oktober 2026</p>
                     </div>
-                </div>
-            </section>
+                </section>
+            </div>
+            <button id="createPostBtn" hidden>Skapa inlägg</button>
+            <form id="postForm" hidden>
+                <label for="postTitle">Titel:</label>
+                <input type="text" id="postTitle" name="title" required>
+                <label for="postText">Text:</label>
+                <textarea id="postText" name="text" required></textarea>
+                <button type="submit">Skapa inlägg</button>
+            </form>
         </main>
         <footer>
             <p>&copy; Svampletarna 2026</p>
