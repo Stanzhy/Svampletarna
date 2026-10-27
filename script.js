@@ -2,6 +2,7 @@ const DOM = {
   mainContainer: document.getElementById("mainContainer"),
   message: document.getElementById("message"),
   logInBtn: document.getElementById("logInBtn"),
+  createNewUserBtn: document.getElementById("createNewUserBtn"),
   logInWindow: document.getElementById("logInWindow"),
   overlay: document.getElementById("overlay"),
   closeBtn: document.getElementById("closeBtn"),
@@ -55,16 +56,19 @@ class User {
 // Skapar nya användare och plasera i användarlistan
 function createUser(currentName, currentPass, isRedaktor = false) {
   if (state.users.some((user) => user.name === currentName)) {
-    console.log(`Användaren ${currentName} finns redan.`);
+    DOM.formsMessage.textContent = `Användaren ${currentName} finns redan.`;
     return;
   }
   state.users.push(new User(currentName, currentPass, isRedaktor));
+  StorageService.saveUsers(state.users);
+  DOM.formsMessage.textContent = `Användaren ${currentName} har skapats.`;
 }
 
 function showLogInWindows() {
   overlay.hidden = false;
   logInWindow.hidden = false;
   DOM.message.textContent = "";
+  DOM.formsMessage.textContent = "";
 }
 
 function hideLogInWindows() {
@@ -357,7 +361,7 @@ function init() {
   StorageService.loadUsersData(state.users);
   isLoggedIn();
   fetchData();
-  initBlogPage();
+  state.posts = BlogStorage.loadPosts();
 
   DOM.mainPage.addEventListener("click", function () {
     state.currentPage = "mainPage";
@@ -379,8 +383,8 @@ function init() {
     updateUI();
   });
 
-  DOM.logInBtn.addEventListener("click", function (event) {
-    event.preventDefault();
+  DOM.logInBtn.addEventListener("click", function (e) {
+    e.preventDefault();
     if (isLoggedIn()) {
       logOut();
     } else showLogInWindows();
@@ -394,10 +398,16 @@ function init() {
     hideLogInWindows();
   });
 
-  DOM.logInForm.addEventListener("submit", (event) => {
-    event.preventDefault();
+  DOM.logInForm.addEventListener("submit", (e) => {
+    e.preventDefault();
     logIn();
     updateUI();
+  });
+  DOM.createNewUserBtn.addEventListener("click", function (e) {
+    e.preventDefault();
+    const name = DOM.logInForm.elements.name.value;
+    const password = DOM.logInForm.elements.password.value;
+    createUser(name, password, false);
   });
 }
 

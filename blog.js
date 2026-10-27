@@ -15,16 +15,15 @@ const initialPosts = [
         ],
     },
 ];
-function loadPosts() {
-    const data = localStorage.getItem("blogPosts");
-    if (data) {
-        return JSON.parse(data);
-    }
-    return initialPosts;
-}
-function savePosts(posts) {
-    localStorage.setItem("blogPosts", JSON.stringify(posts));
-}
+const BlogStorage = {
+    loadPosts() {
+        const data = localStorage.getItem("blogPosts");
+        return data ? JSON.parse(data) : initialPosts;
+    },
+    savePosts(posts) {
+        localStorage.setItem("blogPosts", JSON.stringify(posts));
+    },
+};
 function renderPost(post) {
     const section = createElement("section", "");
     section.classList.add("blog-post");
@@ -63,6 +62,8 @@ function renderCommentForm(post, div) {
     button.textContent = "Skicka";
     form.appendChild(button);
     div.appendChild(form);
+    input.disabled = !isLoggedIn();
+    button.disabled = !isLoggedIn();
     form.onsubmit = (e) => {
         e.preventDefault();
         const text = input.value.trim();
@@ -79,11 +80,8 @@ function renderCommentForm(post, div) {
                     new Date().toLocaleTimeString("sv-SE").slice(0, 5),
             };
             post.comments.push(newComment);
-            savePosts(state.posts);
+            BlogStorage.savePosts(state.posts);
             renderMainPage();
-        }
-        else {
-            input.value = "";
         }
     };
 }
@@ -91,7 +89,7 @@ function createNewPost() {
     const title = document.getElementById("postTitle");
     const text = document.getElementById("postText");
     const newPost = {
-        id: Date.now() % 10000,
+        id: Date.now(),
         title: title.value,
         text: text.value,
         author: state.currentUser?.name,
@@ -103,7 +101,7 @@ function createNewPost() {
         comments: [],
     };
     state.posts.push(newPost);
-    savePosts(state.posts);
+    BlogStorage.savePosts(state.posts);
     renderMainPage();
 }
 function renderMainPage() {
@@ -130,11 +128,5 @@ function renderMainPage() {
     else {
         DOM.createPostBtn.hidden = true;
         DOM.createPostForm.hidden = true;
-    }
-}
-function initBlogPage() {
-    if (state.currentPage === "mainPage") {
-        state.posts = loadPosts();
-        renderMainPage();
     }
 }

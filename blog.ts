@@ -1,4 +1,3 @@
-// Кажемо TypeScript: «Ці змінні вже існують у script.js, просто дозволь мені їх використовувати»
 declare const DOM: any;
 declare const state: any;
 declare function isLoggedIn(): boolean;
@@ -36,17 +35,15 @@ const initialPosts: BlogPost[] = [
   },
 ];
 
-function loadPosts(): BlogPost[] {
-  const data = localStorage.getItem("blogPosts");
-  if (data) {
-    return JSON.parse(data);
-  }
-  return initialPosts;
-}
-
-function savePosts(posts: BlogPost[]): void {
-  localStorage.setItem("blogPosts", JSON.stringify(posts));
-}
+const BlogStorage = {
+  loadPosts(): BlogPost[] {
+    const data = localStorage.getItem("blogPosts");
+    return data ? JSON.parse(data) : initialPosts;
+  },
+  savePosts(posts: BlogPost[]): void {
+    localStorage.setItem("blogPosts", JSON.stringify(posts));
+  },
+};
 
 function renderPost(post: BlogPost): void {
   const section = createElement("section", "");
@@ -93,6 +90,9 @@ function renderCommentForm(post: BlogPost, div: HTMLElement): void {
   form.appendChild(button);
   div.appendChild(form);
 
+  input.disabled = !isLoggedIn();
+  button.disabled = !isLoggedIn();
+
   form.onsubmit = (e: Event) => {
     e.preventDefault();
     const text = input.value.trim();
@@ -110,10 +110,8 @@ function renderCommentForm(post: BlogPost, div: HTMLElement): void {
           new Date().toLocaleTimeString("sv-SE").slice(0, 5),
       };
       post.comments.push(newComment);
-      savePosts(state.posts);
+      BlogStorage.savePosts(state.posts);
       renderMainPage();
-    } else {
-      input.value = "";
     }
   };
 }
@@ -122,7 +120,7 @@ function createNewPost(): void {
   const title = document.getElementById("postTitle") as HTMLInputElement;
   const text = document.getElementById("postText") as HTMLTextAreaElement;
   const newPost: BlogPost = {
-    id: Date.now() % 10000,
+    id: Date.now(),
     title: title.value,
     text: text.value,
     author: state.currentUser?.name,
@@ -134,7 +132,7 @@ function createNewPost(): void {
     comments: [],
   };
   state.posts.push(newPost);
-  savePosts(state.posts);
+  BlogStorage.savePosts(state.posts);
   renderMainPage();
 }
 
@@ -164,12 +162,5 @@ function renderMainPage() {
   } else {
     DOM.createPostBtn.hidden = true;
     DOM.createPostForm.hidden = true;
-  }
-}
-
-function initBlogPage(): any {
-  if (state.currentPage === "mainPage") {
-    state.posts = loadPosts();
-    renderMainPage();
   }
 }

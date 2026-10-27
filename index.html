@@ -36,11 +36,12 @@
         <h2>Välkommen</h2>
         <form id="logInForm">
             <label for="name">Namn:</label>
-            <input type="text" id="name" name="name" autocomplete="username" required>
+            <input type="text" id="name" name="name" autocomplete="off" required>
             <label for="password">Lösenord:</label>
-            <input type="password" id="password" name="password" autocomplete="current-password" required>
+            <input type="password" id="password" name="password" autocomplete="off" required>
             <span id="formsMessage"></span>
             <button type="submit" id="btnSubmit">Logga in</button>
+            <button type="button" id="createNewUserBtn">Skapa konto</button>
         </form>
     </section>
     <main>

@@ -1,5 +1,14 @@
 * {
   box-sizing: border-box;
+}
+
+body,
+h1,
+h2,
+h3,
+h4,
+p,
+ul {
   margin: 0;
   padding: 0;
 }
@@ -71,6 +80,7 @@ a:hover {
 /* Författare och datum för blogginlägg */
 .post-meta {
   text-align: right;
+  font-weight: lighter;
   color: #666;
   font-size: 0.95rem;
 }
@@ -101,7 +111,7 @@ a:hover {
 .comments > div > p:first-child {
   font-size: 0.85rem;
   color: #556b5e;
-  font-weight: bold;
+  font-weight: lighter;
   padding-top: 0;
 }
 
