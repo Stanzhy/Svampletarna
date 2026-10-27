@@ -1,7 +1,7 @@
 "use strict";
 const initialPosts = [
     {
-        id: 1,
+        id: 1234,
         title: "Mina bästa svampställen",
         author: "Kalle",
         text: "Idag hittade jag fantastiska kantareller djupt inne i granskogen!",
@@ -33,14 +33,18 @@ function renderPost(post) {
     section.appendChild(div);
     div.appendChild(createElement("h3", post.title));
     div.appendChild(createElement("p", post.text));
-    div.appendChild(createElement("p", `${post.author} - ${post.date}`));
+    const meta = createElement("p", `${post.author} — ${post.date}`);
+    meta.classList.add("post-meta");
+    div.appendChild(meta);
     DOM.mainContainer.appendChild(section);
-    if (post.comments.length > 0) {
+    if (post.comments && post.comments.length > 0) {
         const commentsDiv = createElement("div", "");
+        commentsDiv.classList.add("comments");
+        commentsDiv.appendChild(createElement("h4", "Kommentarer:"));
         post.comments.forEach((comment) => {
             const commentDiv = createElement("div", "");
+            commentDiv.appendChild(createElement("p", `${comment.author} — ${comment.date}`));
             commentDiv.appendChild(createElement("p", comment.text));
-            commentDiv.appendChild(createElement("p", `${comment.author} - ${comment.date}`));
             commentsDiv.appendChild(commentDiv);
         });
         div.appendChild(commentsDiv);
@@ -51,35 +55,38 @@ function renderPost(post) {
 }
 function renderCommentForm(post, div) {
     const form = document.createElement("form");
-    const label = document.createElement("label");
-    label.textContent = "Skriv en kommentar: ";
-    form.appendChild(label);
     const input = document.createElement("input");
     input.required = true;
     input.type = "text";
+    input.placeholder = "Skriv en kommentar...";
     form.appendChild(input);
     const button = document.createElement("button");
-    button.textContent = "Kommentera";
+    button.textContent = "Skicka";
     form.appendChild(button);
     div.appendChild(form);
-    form.addEventListener("submit", (e) => {
+    form.onsubmit = (e) => {
         e.preventDefault();
-        const text = input.value;
+        const text = input.value.trim();
+        if (!text)
+            return;
+        if (!post.comments) {
+            post.comments = [];
+        }
         const newComment = {
-            author: state.currentUser?.name,
+            author: state.currentUser?.name || "Anonym",
             text: text,
             date: new Date().toLocaleDateString("sv-SE"),
         };
         post.comments.push(newComment);
         savePosts(state.posts);
         renderMainPage();
-    });
+    };
 }
 function createNewPost() {
     const title = document.getElementById("postTitle");
     const text = document.getElementById("postText");
     const newPost = {
-        id: Date.now(),
+        id: Date.now() % 10000,
         title: title.value,
         text: text.value,
         author: state.currentUser?.name,
@@ -99,6 +106,7 @@ function renderMainPage() {
     }
     if (state.currentUser?.isRedaktor) {
         createPostBtn.hidden = false;
+        createPostForm.hidden = true;
         createPostBtn.onclick = () => {
             createPostForm.hidden = false;
             createPostBtn.hidden = true;

@@ -11,6 +11,8 @@ const DOM = {
   mushroomsPage: document.getElementById("mushroomsPage"),
   foundPage: document.getElementById("foundPage"),
   risksPage: document.getElementById("risksPage"),
+  createPostBtn: document.getElementById("createPostBtn"),
+  createPostForm: document.getElementById("postForm"),
 };
 
 const state = {
@@ -194,6 +196,8 @@ function createSvampKort(svamp, btnText, btnAction) {
 
 function renderRisksPage() {
   DOM.mainContainer.innerHTML = "";
+  DOM.createPostBtn.hidden = true;
+  DOM.createPostForm.hidden = true;
 
   state.properties.forEach((egenskap) => {
     const section = createElement("section");
@@ -233,6 +237,8 @@ function renderRisksPage() {
 
 function renderMushroomsPage() {
   DOM.mainContainer.innerHTML = "";
+  DOM.createPostBtn.hidden = true;
+  DOM.createPostForm.hidden = true;
 
   state.mushrooms.forEach((svamp) => {
     const card = createSvampKort(
@@ -255,8 +261,23 @@ function renderMushroomsPage() {
 
 function renderFoundPage() {
   DOM.mainContainer.innerHTML = "";
+  DOM.createPostBtn.hidden = true;
+  DOM.createPostForm.hidden = true;
 
-  if (!isLoggedIn()) return;
+  if (!isLoggedIn()) {
+    const message = createElement(
+      "h3",
+      "Du måste logga in för att se dina svampar.",
+    );
+    DOM.mainContainer.appendChild(message);
+    return;
+  }
+
+  if (state.currentUser.foundMushrooms.length === 0) {
+    const message = createElement("h3", "Du har inga hittade svampar.");
+    DOM.mainContainer.appendChild(message);
+    return;
+  }
 
   state.currentUser.foundMushrooms.forEach((svamp) => {
     const card = createSvampKort(svamp, "Ta bort svampen", () => {
