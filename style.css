@@ -66,6 +66,147 @@ a:hover {
   color: #b45c2a;
 }
 
+/* --- BLOGG & KOMMENTARER --- */
+
+/* Författare och datum för blogginlägg */
+.post-meta {
+  text-align: right;
+  color: #666;
+  font-size: 0.95rem;
+}
+
+/* Kommentarer sektion */
+.comments {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 15px;
+  padding-top: 10px;
+  border-top: 1px solid #d8e2da;
+}
+
+.comments h4 {
+  font-size: 1rem;
+  color: #162b21;
+}
+
+/* Varje kommentar kort */
+.comments > div {
+  background-color: #e4ebe5;
+  border-radius: 8px;
+  padding: 10px 14px;
+}
+
+/* Författare och datum för kommentar */
+.comments > div > p:first-child {
+  font-size: 0.85rem;
+  color: #556b5e;
+  font-weight: bold;
+  padding-top: 0;
+}
+
+/* Kommentarstext */
+.comments > div > p:last-child {
+  font-size: 1rem;
+  color: #162b21;
+  padding-top: 4px;
+}
+
+/* Formulär för att skriva kommentar */
+.blog-post form {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.blog-post form input {
+  flex: 1;
+  padding: 8px 12px;
+  background-color: #f7f3ea;
+  border: 1px solid #afc2b4;
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+
+.blog-post form button {
+  padding: 8px 18px;
+  background-color: #162b21;
+  color: #fffdf8;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.blog-post form button:hover {
+  background-color: #b45c2a;
+}
+
+/* --- SKAPA NYTT INLÄGG --- */
+
+#createPostBtn {
+  margin: 20px auto;
+  display: block;
+  padding: 10px 24px;
+  background-color: #162b21;
+  color: #fffdf8;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+#createPostBtn:hover {
+  background-color: #b45c2a;
+}
+
+#createPostBtn[hidden],
+#postForm[hidden] {
+  display: none;
+}
+
+#postForm {
+  background-color: #fffdf8;
+  border: 1px solid #d8e2da;
+  border-left: 5px solid #162b21;
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+#postForm input,
+#postForm textarea {
+  padding: 10px;
+  background-color: #f7f3ea;
+  border: 1px solid #afc2b4;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+#postForm textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+#postForm button {
+  align-self: flex-start;
+  padding: 10px 22px;
+  background-color: #162b21;
+  color: #fffdf8;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+#postForm button:hover {
+  background-color: #b45c2a;
+}
+
 #mainContainer {
   padding-top: 20px;
 }
@@ -234,6 +375,7 @@ div > button {
   nav > ul > li {
     border: 0;
     font-size: 1.2rem;
+    max-width: min-content;
   }
 
   header > div {
@@ -277,146 +419,4 @@ footer {
   background-color: #e8efe9;
   border-top: 2px solid #b45c2a;
   border-radius: 10px;
-}
-
-
-/* --- BLOGG & KOMMENTARER --- */
-
-/* Författare och datum för blogginlägg */
-.post-meta {
-  text-align: right;
-  color: #666;
-  font-size: 0.95rem;
-}
-
-/* Kommentarer sektion */
-.comments {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-top: 15px;
-  padding-top: 10px;
-  border-top: 1px solid #d8e2da;
-}
-
-.comments h4 {
-  font-size: 1rem;
-  color: #162b21;
-}
-
-/* Varje kommentar kort */
-.comments > div {
-  background-color: #e4ebe5;
-  border-radius: 8px;
-  padding: 10px 14px;
-}
-
-/* Författare och datum för kommentar */
-.comments > div > p:first-child {
-  font-size: 0.85rem;
-  color: #556b5e;
-  font-weight: bold;
-  padding-top: 0;
-}
-
-/* Kommentarstext */
-.comments > div > p:last-child {
-  font-size: 1rem;
-  color: #162b21;
-  padding-top: 4px;
-}
-
-/* Formulär för att skriva kommentar */
-.blog-post form {
-  display: flex;
-  gap: 10px;
-  margin-top: 12px;
-}
-
-.blog-post form input {
-  flex: 1;
-  padding: 8px 12px;
-  background-color: #f7f3ea;
-  border: 1px solid #afc2b4;
-  border-radius: 6px;
-  font-size: 0.95rem;
-}
-
-.blog-post form button {
-  padding: 8px 18px;
-  background-color: #162b21;
-  color: #fffdf8;
-  border: none;
-  border-radius: 6px;
-  font-size: 0.95rem;
-  cursor: pointer;
-}
-
-.blog-post form button:hover {
-  background-color: #b45c2a;
-}
-
-/* --- SKAPA NYTT INLÄGG --- */
-
-#createPostBtn {
-  margin: 20px auto;
-  display: block;
-  padding: 10px 24px;
-  background-color: #162b21;
-  color: #fffdf8;
-  border: none;
-  border-radius: 6px;
-  font-size: 1.1rem;
-  cursor: pointer;
-}
-
-#createPostBtn:hover {
-  background-color: #b45c2a;
-}
-
-#createPostBtn[hidden],
-#postForm[hidden] {
-  display: none;
-}
-
-#postForm {
-  background-color: #fffdf8;
-  border: 1px solid #d8e2da;
-  border-left: 5px solid #162b21;
-  border-radius: 12px;
-  padding: 20px;
-  margin-top: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-#postForm input,
-#postForm textarea {
-  padding: 10px;
-  background-color: #f7f3ea;
-  border: 1px solid #afc2b4;
-  border-radius: 6px;
-  font-family: inherit;
-  font-size: 1rem;
-}
-
-#postForm textarea {
-  min-height: 120px;
-  resize: vertical;
-}
-
-#postForm button {
-  align-self: flex-start;
-  padding: 10px 22px;
-  background-color: #162b21;
-  color: #fffdf8;
-  border: none;
-  border-radius: 6px;
-  font-size: 1rem;
-  cursor: pointer;
-}
-
-#postForm button:hover {
-  background-color: #b45c2a;
 }

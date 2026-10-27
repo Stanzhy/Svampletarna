@@ -179,8 +179,9 @@ function createSvampKort(svamp, btnText, btnAction) {
   const div = createElement("div");
   section.appendChild(div);
 
-  div.appendChild(createElement("h3", svamp.svenskt_namn));
-  div.appendChild(createElement("p", `Latinskt namn: ${svamp.latinskt_namn}`));
+  div.appendChild(
+    createElement("h3", `${svamp.svenskt_namn} (${svamp.latinskt_namn})`),
+  );
   div.appendChild(createElement("p", `Ätlighet: ${svamp.ätlig}`));
   div.appendChild(createElement("p", `Beskrivning: ${svamp.beskrivning}`));
   div.appendChild(createElement("p", `Fyndplats: ${svamp.fyndplats}`));
@@ -250,8 +251,7 @@ function renderMushroomsPage() {
           StorageService.saveUsers();
           btn.textContent = "Svamp är hittad ✓";
         } else {
-          DOM.message.textContent =
-            "Du måste logga in för att lägga till svampar.";
+          btn.textContent = "Logga in för att lägga till svampar.";
         }
       },
     );
@@ -265,10 +265,7 @@ function renderFoundPage() {
   DOM.createPostForm.hidden = true;
 
   if (!isLoggedIn()) {
-    const message = createElement(
-      "h3",
-      "Du måste logga in för att se dina svampar.",
-    );
+    const message = createElement("h3", "Logga in för att se dina svampar.");
     DOM.mainContainer.appendChild(message);
     return;
   }
@@ -301,7 +298,16 @@ function renderFoundPage() {
   DOM.mainContainer.appendChild(clearContainer);
 }
 
+function showColorCurrentPage(currentPage) {
+  DOM.mainPage.classList.remove("selectedPage");
+  DOM.mushroomsPage.classList.remove("selectedPage");
+  DOM.foundPage.classList.remove("selectedPage");
+  DOM.risksPage.classList.remove("selectedPage");
+  DOM[currentPage].classList.add("selectedPage");
+}
+
 function updateUI() {
+  showColorCurrentPage(state.currentPage);
   switch (state.currentPage) {
     case "mainPage":
       renderMainPage();
@@ -351,6 +357,7 @@ function init() {
   StorageService.loadUsersData(state.users);
   isLoggedIn();
   fetchData();
+  initBlogPage();
 
   DOM.mainPage.addEventListener("click", function () {
     state.currentPage = "mainPage";

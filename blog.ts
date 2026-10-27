@@ -22,21 +22,19 @@ interface BlogComment {
 const initialPosts: BlogPost[] = [
   {
     id: 1234,
-    title: "Mina bästa svampställen",
+    title: "Jakten på höstens guld i skogen",
     author: "Kalle",
-    text: "Idag hittade jag fantastiska kantareller djupt inne i granskogen!",
+    text: "Det är en helt speciell känsla när morgondimman lättar över granskogen och marken doftar av fuktig mossa och barr. Idag bar det av djupt in i skogen för att leta efter säsongens första gula kantareller. Det här stället har jag återkommit till under flera år eftersom den fuktiga miljön och den gamla granskogen är idealisk för svamp. Gå långsamt, leta efter den gula färgen mot den mörka mossan och njut av en härlig stund i naturen inför nästa helg!",
     date: "26 oktober 2026",
     comments: [
       {
         author: "Anna",
-        text: "Vilket härligt fynd! Var det nära sjön?",
-        date: "26 oktober 2026",
+        text: "Man känner nästan doften av skogen och den fuktiga mossan när man läser. Kantareller är verkligen höstens bästa guld, tack för inspirationen!",
+        date: "26 oktober 2026 15:28",
       },
     ],
   },
 ];
-
-state.posts = loadPosts();
 
 function loadPosts(): BlogPost[] {
   const data = localStorage.getItem("blogPosts");
@@ -78,9 +76,7 @@ function renderPost(post: BlogPost): void {
     });
     div.appendChild(commentsDiv);
   }
-  if (isLoggedIn()) {
-    renderCommentForm(post, div);
-  }
+  renderCommentForm(post, div);
 }
 
 function renderCommentForm(post: BlogPost, div: HTMLElement): void {
@@ -88,7 +84,9 @@ function renderCommentForm(post: BlogPost, div: HTMLElement): void {
   const input = document.createElement("input");
   input.required = true;
   input.type = "text";
-  input.placeholder = "Skriv en kommentar...";
+  input.placeholder = isLoggedIn()
+    ? "Skriv en kommentar..."
+    : "Logga in för att komentera!";
   form.appendChild(input);
   const button = document.createElement("button");
   button.textContent = "Skicka";
@@ -98,18 +96,25 @@ function renderCommentForm(post: BlogPost, div: HTMLElement): void {
   form.onsubmit = (e: Event) => {
     e.preventDefault();
     const text = input.value.trim();
-    if (!text) return;
-    if (!post.comments) {
-      post.comments = [];
+    if (isLoggedIn()) {
+      const newComment: BlogComment = {
+        author: state.currentUser?.name || "Anonym",
+        text: text,
+        date:
+          new Date().toLocaleString("sv-SE", {
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+          }) +
+          " " +
+          new Date().toLocaleTimeString("sv-SE").slice(0, 5),
+      };
+      post.comments.push(newComment);
+      savePosts(state.posts);
+      renderMainPage();
+    } else {
+      input.value = "";
     }
-    const newComment: BlogComment = {
-      author: state.currentUser?.name || "Anonym",
-      text: text,
-      date: new Date().toLocaleDateString("sv-SE"),
-    };
-    post.comments.push(newComment);
-    savePosts(state.posts);
-    renderMainPage();
   };
 }
 
@@ -121,7 +126,11 @@ function createNewPost(): void {
     title: title.value,
     text: text.value,
     author: state.currentUser?.name,
-    date: new Date().toLocaleDateString("sv-SE"),
+    date: new Date().toLocaleString("sv-SE", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    }),
     comments: [],
   };
   state.posts.push(newPost);
@@ -158,11 +167,9 @@ function renderMainPage() {
   }
 }
 
-function initBlogPage(): void {
-  console.log(state.currentPage === "mainPage");
+function initBlogPage(): any {
   if (state.currentPage === "mainPage") {
-    console.log("mainPage");
+    state.posts = loadPosts();
+    renderMainPage();
   }
 }
-
-window.onload = initBlogPage;

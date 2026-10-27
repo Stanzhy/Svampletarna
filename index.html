@@ -1,79 +1,62 @@
 <!DOCTYPE html>
 <html lang="sv">
 
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="style.css">
-        <script src="script.js" defer></script>
-        <script src="blog.js" defer></script>
-        <title>Svampletarna</title>
-    </head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+    <script src="blog.js" defer></script>
+    <title>Svampletarna</title>
+</head>
 
-    <body>
-        <header>
-            <h1>
-                <a href="/">
-                    <img src="./img/svampletarna-logo.webp" alt="Svampletarna">
-                </a>
-            </h1>
-            <nav>
-                <ul>
-                    <li><a href="#" id="mainPage">Blogg</a></li>
-                    <li><a href="#" id="mushroomsPage">Svampar</a></li>
-                    <li><a href="#" id="foundPage">Hittade svampar</a></li>
-                    <li><a href="#" id="risksPage">Risker och egenskaper</a></li>
-                </ul>
-            </nav>
-            <div>
-                <span id="message"></span>
-                <a href="#" id="logInBtn">Logga in</a>
-            </div>
-        </header>
-        <div class="overlay hidden" id="overlay" hidden></div>
-        <section class="logInWindow hidden" id="logInWindow" hidden>
-            <span class="close-btn" id="closeBtn">&times;</span>
-            <h2>Välkommen</h2>
-            <form id="logInForm">
-                <label for="name">Namn:</label>
-                <input type="text" id="name" name="name" required>
-                <label for="password">Lösenord:</label>
-                <input type="password" id="password" name="password" autocomplete="password" required>
-                <span id="formsMessage"></span>
-                <button type="submit" id="btnSubmit">Logga in</button>
-            </form>
-        </section>
-        <main>
-            <div id="mainContainer">
-                <section>
-                    <img src="img/artikel.png" alt="Artikl bild">
-                    <div>
-                        <h3>Artikel</h3>
-                        <p>Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae
-                            pellentesque
-                            sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam
-                            urna
-                            tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl
-                            malesuada
-                            lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad
-                            litora
-                            torquent per conubia nostra inceptos himenaeos.</p>
-                        <p id="author">Kalle - 26 oktober 2026</p>
-                    </div>
-                </section>
-            </div>
-            <button id="createPostBtn" hidden>Skapa inlägg</button>
-            <form id="postForm" hidden>
-                <label for="postTitle">Titel:</label>
-                <input type="text" id="postTitle" name="title" required>
-                <label for="postText">Text:</label>
-                <textarea id="postText" name="text" required></textarea>
-                <button type="submit">Skapa inlägg</button>
-            </form>
-        </main>
-        <footer>
-            <p>&copy; Svampletarna 2026</p>
-        </footer>
-    </body>
+<body>
+    <header>
+        <h1>
+            <a href="/">
+                <img src="./img/svampletarna-logo.webp" alt="Svampletarna">
+            </a>
+        </h1>
+        <nav>
+            <ul>
+                <li><a href="#" id="mainPage">Blogg</a></li>
+                <li><a href="#" id="mushroomsPage">Svampar</a></li>
+                <li><a href="#" id="foundPage">Hittade svampar</a></li>
+                <li><a href="#" id="risksPage">Risker och egenskaper</a></li>
+            </ul>
+        </nav>
+        <div>
+            <span id="message"></span>
+            <a href="#" id="logInBtn">Logga in</a>
+        </div>
+    </header>
+    <div class="overlay hidden" id="overlay" hidden></div>
+    <section class="logInWindow hidden" id="logInWindow" hidden>
+        <span class="close-btn" id="closeBtn">&times;</span>
+        <h2>Välkommen</h2>
+        <form id="logInForm">
+            <label for="name">Namn:</label>
+            <input type="text" id="name" name="name" autocomplete="username" required>
+            <label for="password">Lösenord:</label>
+            <input type="password" id="password" name="password" autocomplete="current-password" required>
+            <span id="formsMessage"></span>
+            <button type="submit" id="btnSubmit">Logga in</button>
+        </form>
+    </section>
+    <main>
+        <div id="mainContainer"></div>
+        <button id="createPostBtn" hidden>Skapa inlägg</button>
+        <form id="postForm" hidden>
+            <label for="postTitle">Titel:</label>
+            <input type="text" id="postTitle" name="title" required>
+            <label for="postText">Text:</label>
+            <textarea id="postText" name="text" required></textarea>
+            <button type="submit">Skapa inlägg</button>
+        </form>
+    </main>
+    <footer>
+        <p>&copy; Svampletarna 2026</p>
+    </footer>
+</body>
 
 </html>
