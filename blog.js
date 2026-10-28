@@ -1,6 +1,6 @@
 "use strict";
 // --- STARTDATA ---
-// Standardinlägg som visas om localStorage är tomt vid första besöket
+// Standardinlägg som visas
 const initialPosts = [
     {
         id: 1234,
@@ -20,7 +20,7 @@ const initialPosts = [
 // --- LAGRINGSHANTERING (LOCALSTORAGE) ---
 // Tjänst för att läsa och spara blogginlägg i webbläsarens localStorage
 const BlogStorage = {
-    // Hämtar sparade inlägg från localStorage eller returnerar startdata
+    // Hämtar sparade inlägg från localStorage
     loadPosts() {
         const data = localStorage.getItem("blogPosts");
         return data ? JSON.parse(data) : initialPosts;
@@ -67,7 +67,7 @@ function renderCommentForm(post, div) {
     input.type = "text";
     input.placeholder = isLoggedIn()
         ? "Skriv en kommentar..."
-        : "Logga in för att komentera!";
+        : "Logga in för att kommentera!";
     form.appendChild(input);
     const button = document.createElement("button");
     button.textContent = "Skicka";
@@ -79,9 +79,14 @@ function renderCommentForm(post, div) {
     form.onsubmit = (e) => {
         e.preventDefault();
         const text = input.value.trim();
+        if (!text)
+            return;
         if (isLoggedIn()) {
+            if (!post.comments) {
+                post.comments = [];
+            }
             const newComment = {
-                author: state.currentUser?.name || "Anonym",
+                author: state.currentUser?.name,
                 text: text,
                 date: new Date().toLocaleString("sv-SE", {
                     day: "numeric",
@@ -94,9 +99,6 @@ function renderCommentForm(post, div) {
             post.comments.push(newComment);
             BlogStorage.savePosts(state.posts);
             renderMainPage();
-        }
-        else {
-            input.value = "";
         }
     };
 }

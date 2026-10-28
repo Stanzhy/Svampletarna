@@ -1,6 +1,7 @@
 // --- DOM-ELEMENT ---
 // Samling av referenser till HTML-element som används i applikationen
 const DOM = {
+  logoLink: document.getElementById("logoLink"),
   mainContainer: document.getElementById("mainContainer"),
   message: document.getElementById("message"),
   logInBtn: document.getElementById("logInBtn"),
@@ -386,32 +387,44 @@ async function fetchData() {
 // Initierar grundanvändare, läser in sparad data och kopplar händelselyssnare
 function init() {
   // Skapar standardanvändare
-  createUser("Kalle", "qwe123", (isRedaktor = true));
+  createUser("Kalle", "qwe123", true);
   createUser("Anna", "asd123");
 
   // Kontrollerar tidigare session och laddar data
   StorageService.loadUsersData(state.users);
   isLoggedIn();
-  fetchData();
   state.posts = BlogStorage.loadPosts();
+  updateUI(); // Renderar bloggen direkt utan fördröjning
+  fetchData(); // Hämtar svampdata i bakgrunden
 
-  // Händelselyssnare för sidnavigering
-  DOM.mainPage.addEventListener("click", function () {
+  // Klick på logotypen navigerar till startsidan
+  DOM.logoLink.addEventListener("click", function (e) {
+    e.preventDefault();
     state.currentPage = "mainPage";
     updateUI();
   });
 
-  DOM.mushroomsPage.addEventListener("click", function () {
+  // Händelselyssnare för sidnavigering
+  DOM.mainPage.addEventListener("click", function (e) {
+    e.preventDefault();
+    state.currentPage = "mainPage";
+    updateUI();
+  });
+
+  DOM.mushroomsPage.addEventListener("click", function (e) {
+    e.preventDefault();
     state.currentPage = "mushroomsPage";
     updateUI();
   });
 
-  DOM.foundPage.addEventListener("click", function () {
+  DOM.foundPage.addEventListener("click", function (e) {
+    e.preventDefault();
     state.currentPage = "foundPage";
     updateUI();
   });
 
-  DOM.risksPage.addEventListener("click", function () {
+  DOM.risksPage.addEventListener("click", function (e) {
+    e.preventDefault();
     state.currentPage = "risksPage";
     updateUI();
   });
@@ -438,11 +451,15 @@ function init() {
     updateUI();
   });
 
-  // Händelselyssnare för att registrera en ny användare
+  // Händelselyssnare för att registrera en ny användare med validering
   DOM.createNewUserBtn.addEventListener("click", function (e) {
     e.preventDefault();
-    const name = DOM.logInForm.elements.name.value;
-    const password = DOM.logInForm.elements.password.value;
+    const name = DOM.logInForm.elements.name.value.trim();
+    const password = DOM.logInForm.elements.password.value.trim();
+    if (!name || !password) {
+      DOM.formsMessage.textContent = "Fyll i både namn och lösenord.";
+      return;
+    }
     createUser(name, password, false);
   });
 }

@@ -100,7 +100,7 @@ function renderCommentForm(post: BlogPost, div: HTMLElement): void {
   input.type = "text";
   input.placeholder = isLoggedIn()
     ? "Skriv en kommentar..."
-    : "Logga in för att komentera!";
+    : "Logga in för att kommentera!";
   form.appendChild(input);
   const button = document.createElement("button");
   button.textContent = "Skicka";
@@ -114,9 +114,14 @@ function renderCommentForm(post: BlogPost, div: HTMLElement): void {
   form.onsubmit = (e: Event) => {
     e.preventDefault();
     const text = input.value.trim();
+    if (!text) return;
+
     if (isLoggedIn()) {
+      if (!post.comments) {
+        post.comments = [];
+      }
       const newComment: BlogComment = {
-        author: state.currentUser?.name || "Anonym",
+        author: state.currentUser?.name,
         text: text,
         date:
           new Date().toLocaleString("sv-SE", {
@@ -130,7 +135,7 @@ function renderCommentForm(post: BlogPost, div: HTMLElement): void {
       post.comments.push(newComment);
       BlogStorage.savePosts(state.posts);
       renderMainPage();
-    } 
+    }
   };
 }
 
