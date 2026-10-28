@@ -365,7 +365,7 @@ function updateUI() {
 async function fetchData() {
   try {
     const responceSvampar = await fetch("./svampar.json");
-    const responceEgenskaper = await fetch("./speciellaegenskaper.json");
+    const responceEgenskaper = await fetch("./speciellaEgenskaper.json");
 
     if (!responceSvampar.ok || !responceEgenskaper.ok) {
       throw new Error("Fetch is failed!");
