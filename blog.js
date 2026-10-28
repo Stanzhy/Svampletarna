@@ -1,4 +1,6 @@
 "use strict";
+// --- STARTDATA ---
+// Standardinlägg som visas om localStorage är tomt vid första besöket
 const initialPosts = [
     {
         id: 1234,
@@ -15,15 +17,21 @@ const initialPosts = [
         ],
     },
 ];
+// --- LAGRINGSHANTERING (LOCALSTORAGE) ---
+// Tjänst för att läsa och spara blogginlägg i webbläsarens localStorage
 const BlogStorage = {
+    // Hämtar sparade inlägg från localStorage eller returnerar startdata
     loadPosts() {
         const data = localStorage.getItem("blogPosts");
         return data ? JSON.parse(data) : initialPosts;
     },
+    // Sparar hela inläggslistan som JSON i localStorage
     savePosts(posts) {
         localStorage.setItem("blogPosts", JSON.stringify(posts));
     },
 };
+// --- DOM-RENDERING AV INLÄGG ---
+// Skapar och monterar HTML-element för ett enskilt blogginlägg samt dess kommentarer
 function renderPost(post) {
     const section = createElement("section", "");
     section.classList.add("blog-post");
@@ -35,6 +43,7 @@ function renderPost(post) {
     meta.classList.add("post-meta");
     div.appendChild(meta);
     DOM.mainContainer.appendChild(section);
+    // Renderar kommentarer om det finns några för inlägget
     if (post.comments && post.comments.length > 0) {
         const commentsDiv = createElement("div", "");
         commentsDiv.classList.add("comments");
@@ -49,6 +58,8 @@ function renderPost(post) {
     }
     renderCommentForm(post, div);
 }
+// --- KOMMENTARSFORMULÄR ---
+// Skapar kommentarsformuläret och hanterar inskickning av nya kommentarer
 function renderCommentForm(post, div) {
     const form = document.createElement("form");
     const input = document.createElement("input");
@@ -62,6 +73,7 @@ function renderCommentForm(post, div) {
     button.textContent = "Skicka";
     form.appendChild(button);
     div.appendChild(form);
+    // Inaktiverar inmatning för icke inloggade användare
     input.disabled = !isLoggedIn();
     button.disabled = !isLoggedIn();
     form.onsubmit = (e) => {
@@ -83,8 +95,13 @@ function renderCommentForm(post, div) {
             BlogStorage.savePosts(state.posts);
             renderMainPage();
         }
+        else {
+            input.value = "";
+        }
     };
 }
+// --- SKAPA NYTT INLÄGG ---
+// Läser in text från formuläret, bygger ett nytt inläggsobjekt och sparar det
 function createNewPost() {
     const title = document.getElementById("postTitle");
     const text = document.getElementById("postText");
@@ -104,11 +121,14 @@ function createNewPost() {
     BlogStorage.savePosts(state.posts);
     renderMainPage();
 }
+// --- RENDERING AV BLOGGVYN ---
+// Tömmer huvudcontainern och ritar upp alla inlägg samt hanterar skaparknapp
 function renderMainPage() {
     DOM.mainContainer.innerHTML = "";
     for (const post of state.posts) {
         renderPost(post);
     }
+    // Visar skaparknapp enbart för användare med redaktörsrättigheter
     if (state.currentUser?.isRedaktor) {
         DOM.createPostBtn.hidden = false;
         DOM.createPostForm.hidden = true;

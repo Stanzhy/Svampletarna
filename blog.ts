@@ -1,8 +1,19 @@
+// --- GLOBALA DEKLARATIONER ---
+// Variabler och funktioner som delas från script.js
 declare const DOM: any;
 declare const state: any;
 declare function isLoggedIn(): boolean;
 declare function createElement(tag: string, textContent: string): HTMLElement;
 
+// --- DATAMODELLER (INTERFACES) ---
+// Datastruktur för en enskild kommentar
+interface BlogComment {
+  author: string;
+  text: string;
+  date: string;
+}
+
+// Datastruktur för ett blogginlägg med tillhörande kommentarer
 interface BlogPost {
   id: number;
   title: string;
@@ -12,12 +23,8 @@ interface BlogPost {
   comments: BlogComment[];
 }
 
-interface BlogComment {
-  author: string;
-  text: string;
-  date: string;
-}
-
+// --- STARTDATA ---
+// Standardinlägg som visas
 const initialPosts: BlogPost[] = [
   {
     id: 1234,
@@ -35,16 +42,23 @@ const initialPosts: BlogPost[] = [
   },
 ];
 
+// --- LAGRINGSHANTERING (LOCALSTORAGE) ---
+// Tjänst för att läsa och spara blogginlägg i webbläsarens localStorage
 const BlogStorage = {
+  // Hämtar sparade inlägg från localStorage
   loadPosts(): BlogPost[] {
     const data = localStorage.getItem("blogPosts");
     return data ? JSON.parse(data) : initialPosts;
   },
+
+  // Sparar hela inläggslistan som JSON i localStorage
   savePosts(posts: BlogPost[]): void {
     localStorage.setItem("blogPosts", JSON.stringify(posts));
   },
 };
 
+// --- DOM-RENDERING AV INLÄGG ---
+// Skapar och monterar HTML-element för ett enskilt blogginlägg samt dess kommentarer
 function renderPost(post: BlogPost): void {
   const section = createElement("section", "");
   section.classList.add("blog-post");
@@ -59,6 +73,7 @@ function renderPost(post: BlogPost): void {
 
   DOM.mainContainer.appendChild(section);
 
+  // Renderar kommentarer om det finns några för inlägget
   if (post.comments && post.comments.length > 0) {
     const commentsDiv = createElement("div", "");
     commentsDiv.classList.add("comments");
@@ -76,6 +91,8 @@ function renderPost(post: BlogPost): void {
   renderCommentForm(post, div);
 }
 
+// --- KOMMENTARSFORMULÄR ---
+// Skapar kommentarsformuläret och hanterar inskickning av nya kommentarer
 function renderCommentForm(post: BlogPost, div: HTMLElement): void {
   const form = document.createElement("form");
   const input = document.createElement("input");
@@ -90,6 +107,7 @@ function renderCommentForm(post: BlogPost, div: HTMLElement): void {
   form.appendChild(button);
   div.appendChild(form);
 
+  // Inaktiverar inmatning för icke inloggade användare
   input.disabled = !isLoggedIn();
   button.disabled = !isLoggedIn();
 
@@ -112,10 +130,12 @@ function renderCommentForm(post: BlogPost, div: HTMLElement): void {
       post.comments.push(newComment);
       BlogStorage.savePosts(state.posts);
       renderMainPage();
-    }
+    } 
   };
 }
 
+// --- SKAPA NYTT INLÄGG ---
+// Läser in text från formuläret, bygger ett nytt inläggsobjekt och sparar det
 function createNewPost(): void {
   const title = document.getElementById("postTitle") as HTMLInputElement;
   const text = document.getElementById("postText") as HTMLTextAreaElement;
@@ -136,12 +156,15 @@ function createNewPost(): void {
   renderMainPage();
 }
 
+// --- RENDERING AV BLOGGVYN ---
+// Tömmer huvudcontainern och ritar upp alla inlägg samt hanterar skaparknapp
 function renderMainPage() {
   DOM.mainContainer.innerHTML = "";
   for (const post of state.posts) {
     renderPost(post);
   }
 
+  // Visar skaparknapp enbart för användare med redaktörsrättigheter
   if (state.currentUser?.isRedaktor) {
     DOM.createPostBtn.hidden = false;
     DOM.createPostForm.hidden = true;
