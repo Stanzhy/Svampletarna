@@ -1,6 +1,17 @@
-* {
-  color: #162b21;
+*,
+*::before,
+*::after {
   box-sizing: border-box;
+}
+
+/* Nollställer standardmarginaler och utfyllnad för text- och listelement */
+body,
+h1,
+h2,
+h3,
+h4,
+p,
+ul {
   margin: 0;
   padding: 0;
 }
@@ -12,7 +23,11 @@ body {
   padding: 10px;
   min-height: 100vh;
   background-color: #f7f3ea;
+  color: #162b21;
 }
+
+/* --- HEADER OCH NAVIGERING --- */
+
 header {
   background-color: #e8efe9;
   border-bottom: 3px solid #b45c2a;
@@ -20,7 +35,7 @@ header {
 }
 
 header img {
-  height: 5rem;
+  height: 3rem;
   width: auto;
 }
 
@@ -31,7 +46,7 @@ nav > ul {
 }
 
 nav > ul > li {
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   text-align: center;
   line-height: 1.4;
   padding: 5px;
@@ -62,9 +77,159 @@ a:hover {
   color: #b45c2a;
 }
 
-main {
+/* Markering för aktiv sida i menyn */
+.selectedPage {
+  color: #b45c2a;
+}
+
+/* --- BLOGG & KOMMENTARER --- */
+
+/* Författare och datum för blogginlägg */
+.post-meta {
+  text-align: right;
+  font-weight: lighter;
+  color: #666;
+  font-size: 0.95rem;
+}
+
+/* Behållare för kommentarer under ett inlägg */
+.comments {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 15px;
+  padding-top: 10px;
+  border-top: 1px solid #d8e2da;
+}
+
+.comments h4 {
+  font-size: 1rem;
+  color: #162b21;
+}
+
+/* Enskilt kommentarskort */
+.comments > div {
+  background-color: #e4ebe5;
+  border-radius: 8px;
+  padding: 10px 14px;
+}
+
+/* Författare och datum för kommentar */
+.comments > div > p:first-child {
+  font-size: 0.85rem;
+  color: #556b5e;
+  font-weight: lighter;
+  padding-top: 0;
+}
+
+/* Kommentarstext */
+.comments > div > p:last-child {
+  font-size: 1rem;
+  color: #162b21;
+  padding-top: 4px;
+}
+
+/* Formulär för att skriva kommentar */
+.blog-post form {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.blog-post form input {
+  flex: 1;
+  padding: 8px 12px;
+  background-color: #f7f3ea;
+  border: 1px solid #afc2b4;
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+
+.blog-post form button {
+  padding: 8px 18px;
+  background-color: #162b21;
+  color: #fffdf8;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.blog-post form button:hover {
+  background-color: #b45c2a;
+}
+
+/* --- SKAPA NYTT INLÄGG --- */
+
+#createPostBtn {
+  margin: 20px auto;
+  display: block;
+  padding: 10px 24px;
+  background-color: #162b21;
+  color: #fffdf8;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+#createPostBtn:hover {
+  background-color: #b45c2a;
+}
+
+/* Döljer knappar och formulär med hidden-attribut */
+#createPostBtn[hidden],
+#postForm[hidden] {
+  display: none;
+}
+
+/* Formulär för att skapa ett nytt blogginlägg */
+#postForm {
+  background-color: #fffdf8;
+  border: 1px solid #d8e2da;
+  border-left: 5px solid #162b21;
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+#postForm input,
+#postForm textarea {
+  padding: 10px;
+  background-color: #f7f3ea;
+  border: 1px solid #afc2b4;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+#postForm textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+#postForm button {
+  align-self: flex-start;
+  padding: 10px 22px;
+  background-color: #162b21;
+  color: #fffdf8;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+#postForm button:hover {
+  background-color: #b45c2a;
+}
+
+/* --- INLOGGNINGSMODAL OCH BAKGRUNDSÖVERDRAG --- */
+
+#mainContainer {
   padding-top: 20px;
-  height: fit-content;
 }
 
 .logInWindow {
@@ -123,7 +288,7 @@ main {
   background-color: #b45c2a;
 }
 
-/* bakgrund för logga in */
+/* Halvgenomskinlig bakgrund för inloggningsfönstret */
 .overlay {
   position: fixed;
   top: 0;
@@ -134,19 +299,32 @@ main {
   z-index: 99;
 }
 
+/* --- KORT OCH SEKTIONER --- */
+
+/* Standardkort med vänsterkant och rundade hörn */
 section {
   margin-top: 20px;
   padding: 20px;
+  height: fit-content;
   background-color: #fffdf8;
   border: 1px solid #d8e2da;
   border-left: 5px solid #b45c2a;
   border-radius: 12px;
 }
 
-img {
+#mainContainer > section > img {
   width: 100%;
+  min-width: 300px;
   height: fit-content;
   padding: 10px;
+}
+
+section > div {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 10px;
+  row-gap: 10px;
 }
 
 h3 {
@@ -159,6 +337,41 @@ p {
   color: #30483b;
 }
 
+div > button {
+  padding: 10px;
+  background-color: #162b21;
+  color: #fffdf8;
+  border: none;
+  border-radius: 4px;
+  align-self: center;
+  width: 50%;
+  font-size: 1.2rem;
+  cursor: pointer;
+  margin-top: auto;
+}
+
+.clear-btn-cont {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  width: 100%;
+}
+
+.clear-btn-cont button {
+  padding: 10px;
+  background-color: #162b21;
+  color: #fffdf8;
+  border: none;
+  border-radius: 4px;
+  align-self: center;
+  width: 20%;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+/* --- RESPONSIV LAYOUT (MEDIEFRÅGOR) --- */
+
 @media (min-width: 768px) {
   body {
     max-width: 1200px;
@@ -170,10 +383,6 @@ p {
     justify-content: space-between;
     align-items: center;
     padding: 0 10px;
-  }
-
-  header > img {
-    height: 5rem;
   }
 
   nav {
@@ -189,9 +398,11 @@ p {
     min-width: 290px;
     gap: 20px;
   }
+
   nav > ul > li {
     border: 0;
-    font-size: 1.3rem;
+    font-size: 1.2rem;
+    max-width: min-content;
   }
 
   header > div {
@@ -210,20 +421,20 @@ p {
     padding: 0;
   }
 
-  main {
+  #mainContainer {
     display: grid;
-    grid-template-columns: 200px 1fr;
     gap: 20px;
+    width: 100%;
   }
 
-  main > section {
-    grid-column: span 2;
+  #mainContainer > section {
     display: flex;
     flex-direction: row;
     gap: 20px;
     margin-top: 0;
   }
-  main > section > img {
+
+  #mainContainer > section > img {
     width: 300px;
     padding: 0;
   }
