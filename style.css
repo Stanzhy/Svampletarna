@@ -50,7 +50,8 @@ nav > ul > li {
   text-align: center;
   line-height: 1.4;
   padding: 5px;
-  border: 1px solid rgb(88, 88, 88);
+  color: rgb(102, 102, 102);
+  border-top: 1px solid rgb(88, 88, 88);
 }
 
 header > div {
@@ -60,7 +61,7 @@ header > div {
   text-align: center;
   line-height: 1.4;
   padding: 5px;
-  border: 1px solid rgb(88, 88, 88);
+  border-top: 1px solid rgb(88, 88, 88);
 }
 
 #message {
@@ -71,6 +72,7 @@ header > div {
 a {
   display: block;
   text-decoration: none;
+  color: #30483b;
 }
 
 a:hover {
